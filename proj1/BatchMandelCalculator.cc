@@ -33,6 +33,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 	const int TILE_SIZE = 16
 	
 	// budeme postupovat po kusech matice
+	#pragma omp simd parallel for
 	for (int tileIndex = 0; tileIndex < (height * (width / 2)); tileIndex += TILE_SIZE) {
 
 		// vypocet aktualni pozice v matici
