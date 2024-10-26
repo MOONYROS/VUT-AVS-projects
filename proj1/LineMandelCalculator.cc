@@ -34,7 +34,8 @@ int * LineMandelCalculator::calculateMandelbrot () {
 	for (int i = 0; i < height; i++) {
 		float y = y_start + i * dy;
 
-		#pragma omp simd aligned(data: 64)
+		// zkusil jsem simdlen nastavit na 8 - po ruznych zkouskach mi to vychazelo jako nejlepsi
+		#pragma omp simd aligned(data: 64) simdlen(8)
 		for (int j = 0; j < width; j++) {
 			float x = x_start + j * dx;
 
