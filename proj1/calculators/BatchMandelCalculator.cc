@@ -33,7 +33,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 	const int TILE_SIZE = 8;
 
 	// budeme postupovat po kusech matice
-	#pragma omp simd parallel for
+	#pragma omp parallel for
 	for (int tileIndex = 0; tileIndex < (height * width); tileIndex += TILE_SIZE) {
 
 		// vypocet aktualni pozice v matici
@@ -48,7 +48,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			int escapeCounter = 0;
 
 			// tady valime pres sloupce aktualniho tilu nebo do konce matice
-			#pragma omp simd aligned(data: 64) simdlen(8) reduction(+: escapeCounter)
+			#pragma omp simd aligned(data: 64) reduction(+: escapeCounter)
 			for (int j = tileColStart; j < std::min(tileColStart + TILE_SIZE, width); j++) {
 				float x = x_start + j * dx;
 
