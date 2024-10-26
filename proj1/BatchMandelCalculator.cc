@@ -44,8 +44,11 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 		for (int i = tileRowStart; i < std:min(tileRowStart + TILE_SIZE, height); i++) {
 			float y = y_start + i * dy;
 
+			// budu pro radek pocitat uniky
+			int escapeCounter = 0;
+
 			// tady valime pres sloupce aktualniho tilu nebo do konce matice
-			#pragma omp simd aligned(data: 64) simdlen(8)
+			#pragma omp simd aligned(data: 64) simdlen(8) reduction(+: escapeCounter)
 			for (int j = tileColStart; j < std:min(tileColStart + TILE_SIZE, width); j++) {
 				float x = x_start + j * dx;
 
@@ -60,6 +63,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 					if (r2 + i2 > 4.0f) {
 						value = k;
+						escapeCounter++; // mame unik -> inkrementujeme pocitadlo
 						break;
 					}
 
@@ -70,6 +74,11 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 				// matice je symetricka - vysledek ukladam na dve mista
 				data[i * width + j] = value;
 				data[i * width + (width - j - 1)] = value;
+			}
+
+			// pokud vsechny body v radku unikly, nema smysl dal pocitat
+			if (escapeCounter >= (width / 2)) {
+				break;
 			}
 		}
 	}
