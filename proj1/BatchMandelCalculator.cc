@@ -30,22 +30,25 @@ BatchMandelCalculator::~BatchMandelCalculator() {
 
 
 int * BatchMandelCalculator::calculateMandelbrot () {
-	// pojedeme pres vsechny radky po batchich
-	for (int batchStart = 0; batchStart < height; batchStart += batchSize) {
-		// kontrola konce -> bud jedu po batchSize nebo po max vysku
-		int batchEnd = std::min(batchStart + batchSize, height);
+	const int TILE_SIZE = 16
+	
+	// budeme postupovat po kusech matice
+	for (int tileIndex = 0; tileIndex < (height * (width / 2)); tileIndex += TILE_SIZE) {
 
-		// paralelizace -> kazdy radek batche je na jednom vlakne
-		#pragma omp parallel for
-		for (int i = batchStart; i < batchEnd; i++) {
+		// vypocet aktualni pozice v matici
+		int tileRowStart = (tileIndex / (width / 2)) * TILE_SIZE;
+		int tileColStart = (tileIndex % (width / 2)) / TILE_SIZE * TILE_SIZE;
+
+		// jedeme pres radky v ramci tilu nebo do konce matice
+		for (int i = tileRowStart; i < std:min(tileRowStart + TILE_SIZE, height); i++) {
 			float y = y_start + i * dy;
 
-			// vektorizace pro kazdy sloupec v radku v batchi
+			// tady valime pres sloupce aktualniho tilu nebo do konce matice
 			#pragma omp simd aligned(data: 64) simdlen(8)
-			for (int j = 0; j < width / 2; j++) {
+			for (int j = tileColStart; j < std:min(tileColStart + TILE_SIZE, width); j++) {
 				float x = x_start + j * dx;
 
-				// vypocet mandelbrotovy mnoziny
+				// zaciname pocitat mandelbrotovu mnozinu
 				float zReal = x;
 				float zImag = y;
 				int value = limit;
@@ -63,6 +66,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 					zReal = r2 - i2 + x;
 				}
 
+				// matice je symetricka - vysledek ukladam na dve mista
 				data[i * width + j] = value;
 				data[i * width + (width - j - 1)] = value;
 			}
