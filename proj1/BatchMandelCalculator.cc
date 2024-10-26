@@ -18,7 +18,7 @@
 BatchMandelCalculator::BatchMandelCalculator (unsigned matrixBaseSize, unsigned limit) :
 	BaseMandelCalculator(matrixBaseSize, limit, "BatchMandelCalculator")
 {
-	data = (int *)(_mm_malloc(height * width * sizeof(int)));
+	data = (int *)(_mm_malloc(height * width * sizeof(int), 64));
 }
 
 BatchMandelCalculator::~BatchMandelCalculator() {
@@ -41,8 +41,8 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			float y = y_start + i * dy;
 
 			// vektorizace pro kazdy sloupec v radku v batchi
-			#pragma omp simd simdlen(8)
-			for (int j = 0; j < width; j++) {
+			#pragma omp simd aligned(data: 64) simdlen(8)
+			for (int j = 0; j < width / 2; j++) {
 				float x = x_start + j * dx;
 
 				// vypocet mandelbrotovy mnoziny
@@ -64,6 +64,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 				}
 
 				data[i * width + j] = value;
+				data[i * width + (width - j - 1)] = value;
 			}
 		}
 	}
