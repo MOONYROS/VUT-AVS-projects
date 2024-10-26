@@ -19,6 +19,18 @@ BatchMandelCalculator::BatchMandelCalculator (unsigned matrixBaseSize, unsigned 
 	BaseMandelCalculator(matrixBaseSize, limit, "BatchMandelCalculator")
 {
 	data = (int *)(_mm_malloc(height * width * sizeof(int), 64));
+	xVals = (float *)(_mm_malloc(height * width * sizeof(float), 64));
+	yVals = (float *)(_mm_malloc(height * width * sizeof(float), 64));
+
+	// predpocitam si realne casti
+	for (int j = 0; j < wjdth; j++) {
+		xVals[j] = x_start + j * dx;
+	}
+
+	// a taky imaginarni casti
+	for (int i = 0; i < height; i++) {
+		yVals[i] = y_start + i * dy;
+	}
 }
 
 BatchMandelCalculator::~BatchMandelCalculator() {
@@ -26,12 +38,20 @@ BatchMandelCalculator::~BatchMandelCalculator() {
 		_mm_free(data);
 		data = NULL;
 	}
+	if (xVals != NULL) {
+		_mm_free(xVals);
+		xVals = NULL;
+	}
+	if (yVals != NULL) {
+		_mm_free(yVals);
+		yVals = NULL;
+	}
 }
 
 
 int * BatchMandelCalculator::calculateMandelbrot () {
 	const int TILE_SIZE = 16
-	
+
 	// budeme postupovat po kusech matice
 	#pragma omp simd parallel for
 	for (int tileIndex = 0; tileIndex < (height * (width / 2)); tileIndex += TILE_SIZE) {
@@ -42,7 +62,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 		// jedeme pres radky v ramci tilu nebo do konce matice
 		for (int i = tileRowStart; i < std:min(tileRowStart + TILE_SIZE, height); i++) {
-			float y = y_start + i * dy;
+			float y = yVals[i];
 
 			// budu pro radek pocitat uniky
 			int escapeCounter = 0;
@@ -50,7 +70,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			// tady valime pres sloupce aktualniho tilu nebo do konce matice
 			#pragma omp simd aligned(data: 64) simdlen(8) reduction(+: escapeCounter)
 			for (int j = tileColStart; j < std:min(tileColStart + TILE_SIZE, width); j++) {
-				float x = x_start + j * dx;
+				float x = xVals[j];
 
 				// zaciname pocitat mandelbrotovu mnozinu
 				float zReal = x;
