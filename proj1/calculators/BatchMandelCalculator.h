@@ -17,7 +17,6 @@ public:
     int * calculateMandelbrot();
 
 private:
-    int batchSize = 10;
     int *data;
 };
 

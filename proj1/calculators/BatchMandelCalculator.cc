@@ -30,7 +30,7 @@ BatchMandelCalculator::~BatchMandelCalculator() {
 
 
 int * BatchMandelCalculator::calculateMandelbrot () {
-	const int TILE_SIZE = 8;
+	const int TILE_SIZE = 64;
 
 	// budeme postupovat po kusech matice
 	#pragma omp parallel for
