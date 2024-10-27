@@ -51,8 +51,8 @@ int * LineMandelCalculator::calculateMandelbrot () {
 	for (int i = 0; i < height / 2; i++) {
 		float y = imagArr[i];
 
-		// zkusil jsem simdlen nastavit na 8 - po ruznych zkouskach mi to vychazelo jako nejlepsi
-		#pragma omp simd aligned(data: 64) simdlen(8)
+		// zkusil jsem simdlen nastavit na 32 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
+		#pragma omp simd aligned(data: 256) simdlen(32)
 		for (int j = 0; j < width; j++) {
 			float x = realArr[j];
 

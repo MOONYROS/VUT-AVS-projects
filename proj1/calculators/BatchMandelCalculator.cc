@@ -67,8 +67,8 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			// budu pro radek pocitat uniky
 			int escapeCounter = 0;
 
-			// tady valime pres sloupce aktualniho tilu nebo do konce matice
-			#pragma omp simd aligned(data: 64) reduction(+: escapeCounter)
+			// zkusil jsem simdlen nastavit na 16 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
+			#pragma omp simd aligned(data: 512) simdlen(16) reduction(+: escapeCounter)
 			for (int j = tileColStart; j < std::min(tileColStart + TILE_SIZE, width); j++) {
 				float x = realArr[j];
 
