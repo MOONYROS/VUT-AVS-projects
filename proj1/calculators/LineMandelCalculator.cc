@@ -17,6 +17,17 @@ LineMandelCalculator::LineMandelCalculator (unsigned matrixBaseSize, unsigned li
 	BaseMandelCalculator(matrixBaseSize, limit, "LineMandelCalculator")
 {
 	data = (int *)(aligned_alloc(64, height * width * sizeof(int)));
+	realArr = (float *)(aligned_alloc(64, width * sizeof(float)));
+	imagArr = (float *)(aligned_alloc(64, (height / 2) * sizeof(float)));
+
+	// predpocitani realnych a imaginarnich hodnot v konstruktoru -> nemusi se pocitat v kazde iteraci
+    for (int j = 0; j < width; j++) {
+        realArr[j] = x_start + j * dx;
+    }
+
+    for (int i = 0; i < height / 2; i++) {
+        imagArr[i] = y_start + i * dy;
+    }
 }
 
 LineMandelCalculator::~LineMandelCalculator() {
@@ -24,18 +35,26 @@ LineMandelCalculator::~LineMandelCalculator() {
 		free(data);
 		data = NULL;
 	}
+	if (realArr != NULL) {
+		free(realArr);
+		realArr = NULL;
+	}
+	if (imagArr != NULL) {
+		free(imagArr);
+		imagArr = NULL;
+	}
 }
 
 
 int * LineMandelCalculator::calculateMandelbrot () {
 	#pragma omp parallel for
 	for (int i = 0; i < height / 2; i++) {
-		float y = y_start + i * dy;
+		float y = imagArr[i];
 
 		// zkusil jsem simdlen nastavit na 8 - po ruznych zkouskach mi to vychazelo jako nejlepsi
 		#pragma omp simd aligned(data: 64) simdlen(8)
 		for (int j = 0; j < width; j++) {
-			float x = x_start + j * dx;
+			float x = realArr[j];
 
 			float zReal = x;
 			float zImag = y;

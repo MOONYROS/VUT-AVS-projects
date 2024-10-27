@@ -16,4 +16,6 @@ public:
 
 private:
     int *data;
+    float *realArr;
+    float *imagArr;
 };
