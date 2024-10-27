@@ -28,7 +28,6 @@ LineMandelCalculator::~LineMandelCalculator() {
 
 
 int * LineMandelCalculator::calculateMandelbrot () {
-	// symmetric
 	#pragma omp parallel for
 	for (int i = 0; i < height / 2; i++) {
 		float y = y_start + i * dy;
