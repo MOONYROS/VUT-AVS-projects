@@ -28,8 +28,9 @@ LineMandelCalculator::~LineMandelCalculator() {
 
 
 int * LineMandelCalculator::calculateMandelbrot () {
+	// symmetric
 	#pragma omp parallel for
-	for (int i = 0; i < height; i++) {
+	for (int i = 0; i < height / 2; i++) {
 		float y = y_start + i * dy;
 
 		// zkusil jsem simdlen nastavit na 8 - po ruznych zkouskach mi to vychazelo jako nejlepsi
@@ -55,8 +56,10 @@ int * LineMandelCalculator::calculateMandelbrot () {
 			}
 
 			data[i * width + j] = value;
+			data[(height - i - 1) * width + j] = value;
 		}
 	}
 
+	
 	return data;
 }
