@@ -49,7 +49,8 @@ BatchMandelCalculator::~BatchMandelCalculator() {
 
 
 int * BatchMandelCalculator::calculateMandelbrot () {
-	const int TILE_SIZE = 64;
+	// pro -s 4096 vychazela tile size 512 nejlepe
+	const int TILE_SIZE = 512;
 	const int HALF_HEIGHT = height / 2;
 
 	// budeme postupovat po kusech matice
