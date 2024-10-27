@@ -31,17 +31,18 @@ BatchMandelCalculator::~BatchMandelCalculator() {
 
 int * BatchMandelCalculator::calculateMandelbrot () {
 	const int TILE_SIZE = 64;
+	const int HALF_HEIGHT = height / 2;
 
 	// budeme postupovat po kusech matice
 	#pragma omp parallel for
-	for (int tileIndex = 0; tileIndex < (height * width); tileIndex += TILE_SIZE) {
+	for (int tileIndex = 0; tileIndex < (HALF_HEIGHT * width); tileIndex += TILE_SIZE) {
 
 		// vypocet aktualni pozice v matici
 		int tileRowStart = (tileIndex / width) * TILE_SIZE;
 		int tileColStart = (tileIndex % width) / TILE_SIZE * TILE_SIZE;
 
 		// jedeme pres radky v ramci tilu nebo do konce matice
-		for (int i = tileRowStart; i < std::min(tileRowStart + TILE_SIZE, height); i++) {
+		for (int i = tileRowStart; i < std::min(tileRowStart + TILE_SIZE, HALF_HEIGHT); i++) {
 			float y = y_start + i * dy;
 
 			// budu pro radek pocitat uniky
@@ -72,6 +73,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 				}
 
 				data[i * width + j] = value;
+				data[(height - i - 1) * width + j] = value;
 			}
 
 			// pokud vsechny body v radku unikly, nema smysl dal pocitat
