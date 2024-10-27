@@ -19,12 +19,31 @@ BatchMandelCalculator::BatchMandelCalculator (unsigned matrixBaseSize, unsigned 
 	BaseMandelCalculator(matrixBaseSize, limit, "BatchMandelCalculator")
 {
 	data = (int *)(aligned_alloc(64, height * width * sizeof(int)));
+	realArr = (float *)(aligned_alloc(64, width * sizeof(float)));
+	imagArr = (float *)(aligned_alloc(64, (height / 2) * sizeof(float)));
+
+	// predpocitani realnych a imaginarnich hodnot v konstruktoru -> nemusi se pocitat v kazde iteraci
+    for (int j = 0; j < width; j++) {
+        realArr[j] = x_start + j * dx;
+    }
+
+    for (int i = 0; i < height / 2; i++) {
+        imagArr[i] = y_start + i * dy;
+    }
 }
 
 BatchMandelCalculator::~BatchMandelCalculator() {
 	if (data != NULL) {
 		free(data);
 		data = NULL;
+	}
+	if (realArr != NULL) {
+		free(realArr);
+		realArr = NULL;
+	}
+	if (imagArr != NULL) {
+		free(imagArr);
+		imagArr = NULL;
 	}
 }
 
@@ -43,7 +62,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 		// jedeme pres radky v ramci tilu nebo do konce matice
 		for (int i = tileRowStart; i < std::min(tileRowStart + TILE_SIZE, HALF_HEIGHT); i++) {
-			float y = y_start + i * dy;
+			float y = imagArr[i];
 
 			// budu pro radek pocitat uniky
 			int escapeCounter = 0;
@@ -51,7 +70,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			// tady valime pres sloupce aktualniho tilu nebo do konce matice
 			#pragma omp simd aligned(data: 64) reduction(+: escapeCounter)
 			for (int j = tileColStart; j < std::min(tileColStart + TILE_SIZE, width); j++) {
-				float x = x_start + j * dx;
+				float x = realArr[j];
 
 				// zaciname pocitat mandelbrotovu mnozinu
 				float zReal = x;
