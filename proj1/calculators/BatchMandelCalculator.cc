@@ -59,7 +59,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 		// vypocet aktualni pozice v matici
 		int tileRowStart = (tileIndex / width) * TILE_SIZE;
-		int tileColStart = (tileIndex % width) / TILE_SIZE * TILE_SIZE;
+		int tileColStart = tileIndex % width;
 
 		// jedeme pres radky v ramci tilu nebo do konce matice
 		for (int i = tileRowStart; i < std::min(tileRowStart + TILE_SIZE, HALF_HEIGHT); i++) {
