@@ -66,7 +66,7 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 			float y = imagArr[i];
 
 			// zkusil jsem simdlen nastavit na 16 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
-			#pragma omp simd aligned(data: 512) simdlen(16)
+			#pragma omp simd aligned(data: 64) simdlen(16)
 			for (int j = tileColStart; j < std::min(tileColStart + TILE_SIZE, width); j++) {
 				float x = realArr[j];
 

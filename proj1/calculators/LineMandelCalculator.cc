@@ -53,7 +53,7 @@ int * LineMandelCalculator::calculateMandelbrot () {
 
 		// zkusil jsem simdlen nastavit na 32 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
 		#pragma omp distribute_point
-		#pragma omp simd aligned(data: 256) simdlen(16)
+		#pragma omp simd aligned(data: 64) simdlen(16)
 		for (int j = 0; j < width; j++) {
 			float x = realArr[j];
 
