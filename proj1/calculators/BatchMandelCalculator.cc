@@ -65,11 +65,8 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 		for (int i = tileRowStart; i < std::min(tileRowStart + TILE_SIZE, HALF_HEIGHT); i++) {
 			float y = imagArr[i];
 
-			// budu pro radek pocitat uniky
-			int escapeCounter = 0;
-
 			// zkusil jsem simdlen nastavit na 16 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
-			#pragma omp simd aligned(data: 512) simdlen(16) reduction(+: escapeCounter)
+			#pragma omp simd aligned(data: 512) simdlen(16)
 			for (int j = tileColStart; j < std::min(tileColStart + TILE_SIZE, width); j++) {
 				float x = realArr[j];
 
@@ -84,7 +81,6 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 					if (r2 + i2 > 4.0f) {
 						value = k;
-						escapeCounter++; // mame unik -> inkrementujeme pocitadlo
 						break;
 					}
 
@@ -94,11 +90,6 @@ int * BatchMandelCalculator::calculateMandelbrot () {
 
 				data[i * width + j] = value;
 				data[(height - i - 1) * width + j] = value;
-			}
-
-			// pokud vsechny body v radku unikly, nema smysl dal pocitat
-			if (escapeCounter >= width) {
-				break;
 			}
 		}
 	}
