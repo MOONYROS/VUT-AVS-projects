@@ -21,13 +21,20 @@ LineMandelCalculator::LineMandelCalculator (unsigned matrixBaseSize, unsigned li
 	imagArr = (float *)(aligned_alloc(64, (height / 2) * sizeof(float)));
 
 	// predpocitani realnych a imaginarnich hodnot v konstruktoru -> nemusi se pocitat v kazde iteraci
+	#pragma omp simd aligned(data: 64)
     for (int j = 0; j < width; j++) {
         realArr[j] = x_start + j * dx;
     }
 
+	#pragma omp simd aligned(data: 64)
     for (int i = 0; i < height / 2; i++) {
         imagArr[i] = y_start + i * dy;
     }
+
+	#pragma omp simd aligned(data: 64)
+	for (int i = 0; i < width * height; i++) {
+		data[i] = limit;
+	}
 }
 
 LineMandelCalculator::~LineMandelCalculator() {
@@ -51,7 +58,6 @@ int * LineMandelCalculator::calculateMandelbrot () {
 	for (int i = 0; i < height / 2; i++) {
 		float y = imagArr[i];
 
-		// zkusil jsem simdlen nastavit na 32 - po ruznych zkouskach mi to vychazelo jako nejlepsi pro -s 4096
 		#pragma omp distribute_point
 		#pragma omp simd aligned(data: 64) simdlen(16)
 		for (int j = 0; j < width; j++) {
@@ -78,7 +84,6 @@ int * LineMandelCalculator::calculateMandelbrot () {
 			data[(height - i - 1) * width + j] = value;
 		}
 	}
-
 	
 	return data;
 }

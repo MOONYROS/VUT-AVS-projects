@@ -23,13 +23,20 @@ BatchMandelCalculator::BatchMandelCalculator (unsigned matrixBaseSize, unsigned 
 	imagArr = (float *)(aligned_alloc(64, (height / 2) * sizeof(float)));
 
 	// predpocitani realnych a imaginarnich hodnot v konstruktoru -> nemusi se pocitat v kazde iteraci
-    for (int j = 0; j < width; j++) {
+	#pragma omp simd aligned(data: 64)
+	for (int j = 0; j < width; j++) {
         realArr[j] = x_start + j * dx;
     }
 
+	#pragma omp simd aligned(data: 64)
     for (int i = 0; i < height / 2; i++) {
         imagArr[i] = y_start + i * dy;
     }
+
+	#pragma omp simd aligned(data: 64)
+	for (int i = 0; i < width * height; i++) {
+		data[i] = limit;
+	}
 }
 
 BatchMandelCalculator::~BatchMandelCalculator() {
