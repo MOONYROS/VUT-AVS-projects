@@ -3,7 +3,9 @@
 1. Jaká byla dosažena výkonnost v Intel Advisoru pro implementace ref, line a batch
 (v GFLOPS)? (0.5b)
 ==============================================================================
-
+ref:    3.16
+line:   6.00
+batch:  23.94
 
 
 2. Porovnejte implementaci referenčního rešení oproti "Line" a "Batch" implementaci. 
