@@ -11,23 +11,35 @@ batch:  23.94
 2. Porovnejte implementaci referenčního rešení oproti "Line" a "Batch" implementaci. 
 Jakým způsobem jsou načítána data, proč, a jaký to má vliv na výkon. (1b)
 ==============================================================================
-
+V refereční implementaci jsou data načítána pro každý bod v matici samostatně, nepoužívá žádné předpočítané hodnoty.
+Dále je pro každý bod samostatně volána funkce mandelbrot, která hodnotu opakovaně kalkuluje.
+Referenční implementace také nepoužívá žádná pragmata, není srovnaná alokace paměti, což průběh zpomaluje.
+Díky tomtu neefektivnímu způsobu řešení výrazně roste výpočetní náročnost a tedy trvá výpočet déle.
 
 
 3. Porovnejte Roofline všech modelů. Jsou implementace memory 
 bound? Jaká je vaše aritmetická intenzita? Dokázali byste ji přibližně spočítat 
 i ručně a jak? (1b)
 ==============================================================================
+REF: je memory bound, je závislá na šířce pásma DRAM. Intenzita: 0.167 FLOP/Byte
+LINE: není memory bound, překračuje i L3 bandwidth. Intenzita: 9.684 FLOP/Byte
+BATCH: je memory bound, závislost na šířce pásma DRAM. Intenzita: 9.700 FLOP/Byte
 
+Jinak by se aritmetická intenzita dala vypočítat jako:
+Celkový počet INT/FLOAT operací / Celkový počet přenesených bytů.
 
 
 4. Komentujte vliv velikosti cache na výkonnost a chování na větších 
 velikostech domény. (1b)
 ==============================================================================
-
+Dostatečně malé matice (malé domény) jsou schopny se vejít do cache paměti.
+Při postupném zvětšování se pak ale doména do cache nemusí vejít. Bude tedy potřeba ji načítat z RAM, což výrazně sníží rychlost výpočtu.
+V této situaci se pak vyplatí domény dělit na menší celky - zpracovat po TILES (BatchMandelbrot).
 
 
 5. Jaký vliv na výkonnost má symetrie? Lze tento rozdíl pozorovat v Intel Advisor? 
 (nápověda: instrukce) (0.5b)
 ============================================================================== 
-
+Symetrie má značný vliv na výkonnost. V Intel Advisoru je možné si v záložce instructions všimnout, že největší část výpočtu zabírají matematické operace (převážně násobení v záložce assembly).
+Vzhledem k tomu, že to zabírá většinu výpočtu je výhodné výsledky symetricky kopírovat do jiné části matice.
+Tím se zamezí zbytečnému počítání navíc a sníží se tak čas, strávený na matematických operacích, jelikož se počítá pouze polovina matice.
