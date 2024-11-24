@@ -30,7 +30,7 @@ unsigned LoopMeshBuilder::marchCubes(const ParametricScalarField &field)
     // redukce je kvuli pripocitavani k totalTriangles v kazde iteraci
     // predchazi se tak race conditions
     #pragma omp parallel for reduction(+: totalTriangles)
-    for (size_t i = 0; i < totalCubesCount; i++) {
+    for (size_t i = 0; i < totalCubesCount; ++i) {
         Vec3_t<float> cubeOffset( i % mGridSize,
                                  (i / mGridSize) % mGridSize,
                                   i / (mGridSize*mGridSize));
@@ -43,7 +43,25 @@ unsigned LoopMeshBuilder::marchCubes(const ParametricScalarField &field)
 
 float LoopMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field)
 {
-    return 0.0f;
+    // ulozim si do vlastniho pole ty bodiky
+    const Vec3_t<float> *pPoints = field.getPoints().data();
+
+    // spocitam si, kolik mam tech bodiku
+    const unsigned count = unsigned(field.getPoints().size());
+
+    // vezmu si maximalni vzdalenost pole, kterou budu postupne zmensovat
+    float minDistanceSquared = std::numeric_limits<float>::max();
+
+    #pragma omp parallel for reduction(min:minDistanceSquared)
+    for (unsigned i = 0; i < count; ++i) {
+        float distanceSquared  = (pos.x - pPoints[i].x) * (pos.x - pPoints[i].x);
+        distanceSquared       += (pos.y - pPoints[i].y) * (pos.y - pPoints[i].y);
+        distanceSquared       += (pos.z - pPoints[i].z) * (pos.z - pPoints[i].z);
+
+        minDistanceSquared = std::min(minDistanceSquared, distanceSquared);
+    }
+
+    return sqrt(minDistanceSquared);
 }
 
 void LoopMeshBuilder::emitTriangle(const BaseMeshBuilder::Triangle_t &triangle)
