@@ -48,5 +48,18 @@ float LoopMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const Parametri
 
 void LoopMeshBuilder::emitTriangle(const BaseMeshBuilder::Triangle_t &triangle)
 {
+    // buffer pro trojuhelniky - pro kazde vlakno vlastni
+    // pokud vlakno spousti metodu vicekrat, uklada si data do stejneho vektoru
+    static thread_local std::vector<Triangle_t> localTriangles;
 
+    // pridam trojuhelnik do bufferu
+    localTriangles.push_back(triangle);
+
+    #pragma omp critical
+    {
+        // pridava na konec mTriangles buffer localTriangles
+        mTriangles.insert(mTriangles.end(), localTriangles.begin(), localTriangles.end());
+    }
+
+    localTriangles.clear(); // vycisteni bufferu
 }
