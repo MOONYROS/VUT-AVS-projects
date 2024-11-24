@@ -1,7 +1,7 @@
 /**
  * @file    tree_mesh_builder.h
  *
- * @author  FULL NAME <xlogin00@stud.fit.vutbr.cz>
+ * @author  ONDREJ LUKASEK <xlukas15@stud.fit.vutbr.cz>
  *
  * @brief   Parallel Marching Cubes implementation using OpenMP tasks + octree early elimination
  *
@@ -19,6 +19,7 @@ public:
     TreeMeshBuilder(unsigned gridEdgeSize);
 
 protected:
+    unsigned processNode(const Vec3_t<float> &minCorner, float edgelength, const ParametricScalarField &field);
     unsigned marchCubes(const ParametricScalarField &field);
     float evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field);
     void emitTriangle(const Triangle_t &triangle);
