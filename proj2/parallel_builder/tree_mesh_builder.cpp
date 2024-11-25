@@ -34,7 +34,7 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &minCorner,
 
     // vypocitam si podminku prazdnosti bloku
     float centerValue = evaluateFieldAt(center, field);
-    float maxDistance = mIsoLevel + sqrt(3.0f) / 2 * edgelength;
+    float maxDistance = mIsoLevel + sqrt(3.0f) / 2.0f * edgelength;
 
     if (centerValue > maxDistance) {
         // blok je prazdny, neobsahuje povrch => vracim 0
@@ -97,10 +97,36 @@ unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)
 
 float TreeMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field)
 {
-    return 0.0f;
+    // STEJNE JAKO LOOP
+    const Vec3_t<float> *pPoints = field.getPoints().data();
+    const unsigned count = unsigned(field.getPoints().size());
+
+    float minDistanceSquared = std::numeric_limits<float>::max();
+
+    for (unsigned i = 0; i < count; ++i)
+    {
+        float distanceSquared  = (pos.x - pPoints[i].x) * (pos.x - pPoints[i].x);
+        distanceSquared       += (pos.y - pPoints[i].y) * (pos.y - pPoints[i].y);
+        distanceSquared       += (pos.z - pPoints[i].z) * (pos.z - pPoints[i].z);
+
+        minDistanceSquared = std::min(minDistanceSquared, distanceSquared);
+    }
+    
+
+    return sqrt(minDistanceSquared);
 }
 
 void TreeMeshBuilder::emitTriangle(const BaseMeshBuilder::Triangle_t &triangle)
 {
-    
+    // STEJNE JAKO LOOP
+    static thread_local std::vector<Triangle_t> localTriangles;
+
+    localTriangles.push_back(triangle);
+
+    #pragma omp critical
+    {
+        mTriangles.insert(mTriangles.end(), localTriangles.begin(), localTriangles.end());
+    }
+
+    localTriangles.clear();
 }
