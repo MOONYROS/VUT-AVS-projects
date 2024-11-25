@@ -76,8 +76,23 @@ unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)
     // this class. This method will call itself to process the children.
     // It is also strongly suggested to first implement Octree as sequential
     // code and only when that works add OpenMP tasks to achieve parallelism.
+
+    // zase mam na startu 0 trojuhelniku
+    unsigned totalTriangles = 0;
+
+    // zacneme na zacatku celeho gridu
+    Vec3_t<float> rootStartCorner = {0.0f,
+                                     0.0f,
+                                     0.0f};
     
-    return 0;
+    // velikost hrany je cele hrany gridu
+    float rootEdgeLength = mGridSize;
+
+    // spustim rekurzivni funkci, co jsem si vytvoril drive
+    totalTriangles = processNode(rootStartCorner, rootEdgeLength, field);
+    
+    // vracim ten rekurzivne spocitany pocet trojuhelniku
+    return totalTriangles;
 }
 
 float TreeMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field)
