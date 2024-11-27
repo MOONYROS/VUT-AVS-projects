@@ -21,6 +21,15 @@ TreeMeshBuilder::TreeMeshBuilder(unsigned gridEdgeSize)
 }
 
 // TODO OpenMP tasky
+/**
+ * @brief Recursively processes a node in scalar field and generates triangles.
+ * 
+ * @param pos Position of node's minimum corner.
+ * @param currentGridSize Current node's size of the grid.
+ * @param field Parametric field to be evaluated.
+ * 
+ * @return Total number of triangles generated within the initial node (and its child nodes).
+ */
 unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field)
 {
     // pokud je blok prazdny, vracime 0
@@ -58,6 +67,15 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGri
 }
 
 // TODO OpenMP tasky
+/**
+ * @brief Determines if a node in the scalar field is empty.
+ * 
+ * @param pos Position of node's minimum corner.
+ * @param currentGridSize Current node's size of the grid.
+ * @param field Parametric field to be evaluated.
+ * 
+ * @return True if the node is empty, false if not.
+ */
 bool TreeMeshBuilder::isNodeEmpty(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field)
 {
     // pomocna promenna pro zapis podilu ve vzorci
