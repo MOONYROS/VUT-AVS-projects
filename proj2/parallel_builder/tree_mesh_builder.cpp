@@ -109,11 +109,6 @@ bool TreeMeshBuilder::isNodeEmpty(const Vec3_t<float> &pos, float currentGridSiz
 
 unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)
 {
-    // Suggested approach to tackle this problem is to add new method to
-    // this class. This method will call itself to process the children.
-    // It is also strongly suggested to first implement Octree as sequential
-    // code and only when that works add OpenMP tasks to achieve parallelism.
-
     // zase mam na startu 0 trojuhelniku
     unsigned totalTriangles = 0;
 
