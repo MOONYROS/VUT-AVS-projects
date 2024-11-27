@@ -19,14 +19,17 @@ public:
     TreeMeshBuilder(unsigned gridEdgeSize);
 
 protected:
-    unsigned processNode(const Vec3_t<float> &minCorner, float edgeLength, const ParametricScalarField &field);
-    bool isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field);
     unsigned marchCubes(const ParametricScalarField &field);
     float evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field);
     void emitTriangle(const Triangle_t &triangle);
     const Triangle_t *getTrianglesArray() const { return mTriangles.data(); }
+    
+    // MOJE METODY
+    unsigned processNode(const Vec3_t<float> &minCorner, float edgeLength, const ParametricScalarField &field);
+    bool isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field);
 
     std::vector<Triangle_t> mTriangles; ///< Temporary array of triangles
+    const unsigned CUT_OFF = 1;
 };
 
 #endif // TREE_MESH_BUILDER_H

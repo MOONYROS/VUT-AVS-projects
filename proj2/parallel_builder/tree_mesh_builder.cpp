@@ -20,14 +20,46 @@ TreeMeshBuilder::TreeMeshBuilder(unsigned gridEdgeSize)
 
 }
 
-// TODO paralelizace
+// TODO OpenMP tasky
 unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &minCorner, 
                                       float edgeLength,
                                       const ParametricScalarField &field)
 {
-    
+    // pokud je blok prazdny, vracime 0
+    if (isBlockEmpty(minCorner, edgeLength, field)) {
+        return 0;
+    }
+
+    // pokud jsme dosahli cut-offu, tak koncime...
+    if (edgeLength <= CUT_OFF) {
+        return buildCube(minCorner, field);
+    }
+    // ...jinak se rozdelime node na 8 dalsich potomku
+    else {
+        unsigned totalTriangles = 0;
+        float childEdgeLength = edgeLength / 2.0f;
+
+        for (int x = 0; x < 2; ++x) {
+            for (int y = 0; y < 2; ++y) {
+                for (int z = 0; z < 2; ++z) {
+                    // vypocitame minimalni rozek pro kazdeho potomka...
+                    Vec3_t<float> childMinCorner = {
+                        minCorner.x + x * childEdgeLength,
+                        minCorner.y + y * childEdgeLength,
+                        minCorner.z + z * childEdgeLength};
+
+                    // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
+                    totalTriangles += processNode(childMinCorner, childEdgeLength, field);
+                }
+            }
+        }
+
+        // vracime konecny pocet vsech trojuhelniku
+        return totalTriangles;
+    }
 }
 
+// TODO OpenMP tasky
 bool TreeMeshBuilder::isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field)
 {
     // pomocna promenna pro zapis podilu ve vzorci
