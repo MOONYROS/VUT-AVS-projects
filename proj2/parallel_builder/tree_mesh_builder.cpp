@@ -21,35 +21,33 @@ TreeMeshBuilder::TreeMeshBuilder(unsigned gridEdgeSize)
 }
 
 // TODO OpenMP tasky
-unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &minCorner, 
-                                      float edgeLength,
-                                      const ParametricScalarField &field)
+unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field)
 {
     // pokud je blok prazdny, vracime 0
-    if (isBlockEmpty(minCorner, edgeLength, field)) {
+    if (isNodeEmpty(pos, currentGridSize, field)) {
         return 0;
     }
 
     // pokud jsme dosahli cut-offu, tak koncime...
-    if (edgeLength <= CUT_OFF) {
-        return buildCube(minCorner, field);
+    if (currentGridSize <= CUT_OFF) {
+        return buildCube(pos, field);
     }
     // ...jinak se rozdelime node na 8 dalsich potomku
     else {
         unsigned totalTriangles = 0;
-        float childEdgeLength = edgeLength / 2.0f;
+        float childGridSize = currentGridSize / 2.0f;
 
         for (int x = 0; x < 2; ++x) {
             for (int y = 0; y < 2; ++y) {
                 for (int z = 0; z < 2; ++z) {
                     // vypocitame minimalni rozek pro kazdeho potomka...
-                    Vec3_t<float> childMinCorner = {
-                        minCorner.x + x * childEdgeLength,
-                        minCorner.y + y * childEdgeLength,
-                        minCorner.z + z * childEdgeLength};
+                    Vec3_t<float> childPos = {
+                        pos.x + x * childGridSize,
+                        pos.y + y * childGridSize,
+                        pos.z + z * childGridSize};
 
                     // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
-                    totalTriangles += processNode(childMinCorner, childEdgeLength, field);
+                    totalTriangles += processNode(childPos, childGridSize, field);
                 }
             }
         }
@@ -60,27 +58,25 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &minCorner,
 }
 
 // TODO OpenMP tasky
-bool TreeMeshBuilder::isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field)
+bool TreeMeshBuilder::isNodeEmpty(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field)
 {
     // pomocna promenna pro zapis podilu ve vzorci
     float fractionConst = sqrt(3.0f) / 2.0f;
     // vypocet delky hrany ("a" ve vzorci)
-    float edgeLength = gridSize * mGridResolution;
+    float edgeLength = currentGridSize * mGridResolution;
 
     // vypocet souradnice stredu bloku
     const Vec3_t<float> blockCenter = {
-        (position.x + gridSize / 2.0f) * mGridResolution,
-        (position.y + gridSize / 2.0f) * mGridResolution,
-        (position.z + gridSize / 2.0f) * mGridResolution
+        (pos.x + currentGridSize / 2.0f) * mGridResolution,
+        (pos.y + currentGridSize / 2.0f) * mGridResolution,
+        (pos.z + currentGridSize / 2.0f) * mGridResolution
     };
 
     // hodnota ve stredu bloku
     const float blockCenterValue = evaluateFieldAt(blockCenter, field);
 
-    // finalni vypocet vzorce
-    bool isBlockEmpty = blockCenterValue > mIsoLevel + fractionConst * edgeLength;
-
-    return isBlockEmpty;
+    // finalni vypocet podminky
+    return blockCenterValue > mIsoLevel + fractionConst * edgeLength;;
 }
 
 unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)

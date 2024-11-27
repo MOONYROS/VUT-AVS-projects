@@ -25,8 +25,8 @@ protected:
     const Triangle_t *getTrianglesArray() const { return mTriangles.data(); }
     
     // MOJE METODY
-    unsigned processNode(const Vec3_t<float> &minCorner, float edgeLength, const ParametricScalarField &field);
-    bool isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field);
+    unsigned processNode(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field);
+    bool isNodeEmpty(const Vec3_t<float> &pos, float currentGridSize, const ParametricScalarField &field);
 
     std::vector<Triangle_t> mTriangles; ///< Temporary array of triangles
     const unsigned CUT_OFF = 1;
