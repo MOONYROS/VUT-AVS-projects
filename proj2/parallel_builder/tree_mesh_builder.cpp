@@ -59,7 +59,7 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGri
                         pos.z + childGridSize * sc_vertexNormPos[i].z
                     };
 
-                    #pragma omp task shared(totalTriangles)
+                    #pragma omp task shared(totalTriangles) firstprivate(childPos, childGridSize) final(childGridSize <= CUT_OFF * 2)
                     {
                         unsigned childTriangles = processNode(childPos, childGridSize, field);
 
