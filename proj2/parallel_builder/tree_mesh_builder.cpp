@@ -22,52 +22,33 @@ TreeMeshBuilder::TreeMeshBuilder(unsigned gridEdgeSize)
 
 // TODO paralelizace
 unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &minCorner, 
-                                      float edgelength,
+                                      float edgeLength,
                                       const ParametricScalarField &field)
 {
-    // zjistim si, kde lezi stred aktualniho bloku
-    Vec3_t<float> center = {
-        minCorner.x + edgelength / 2,
-        minCorner.y + edgelength / 2,
-        minCorner.z + edgelength / 2
-    };
+    
+}
 
-    // vypocitam si podminku prazdnosti bloku
-    float centerValue = evaluateFieldAt(center, field);
-    float maxDistance = mIsoLevel + sqrt(3.0f) / 2.0f * edgelength;
+bool TreeMeshBuilder::isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field)
+{
+    // pomocna promenna pro zapis podilu ve vzorci
+    float fractionConst = sqrt(3.0f) / 2.0f;
+    // vypocet delky hrany ("a" ve vzorci)
+    float edgeLength = gridSize * mGridResolution;
 
-    if (centerValue > maxDistance) {
-        // blok je prazdny, neobsahuje povrch => vracim 0
-        return 0;
-    }
+    // vypocet souradnice stredu bloku
+    const Vec3_t<float> blockCenter = (
+        (position.x + gridSize / 2.0f) * mGridResolution,
+        (position.y + gridSize / 2.0f) * mGridResolution,
+        (position.z + gridSize / 2.0f) * mGridResolution
+    );
 
-    if (edgelength <= mGridResolution) {
-        // blok je dostatecne maly => volam buildcube
-        return buildCube(minCorner, field);
-    }
+    // hodnota ve stredu bloku
+    const float blockCenterValue = evaluateFieldAt(blockCenter, field);
 
-    // ani jedna z podminek neplatila => rozdeluji na podbloky (2^3 = 8)
-    // a pro kazdy z nich zavolam rekurzivne processNode
-    unsigned totalTriangles = 0;
-    float childEdgeLength = edgelength / 2;
+    // finalni vypocet vzorce
+    bool isBlockEmpty = blockCenterValue > mIsoLevel + fractionConst * edgeLength;
 
-    for (int x = 0; x < 2; ++x) {
-        for (int y = 0; y < 2; ++y) {
-            for (int z = 0; z < 2; ++z) {
-                // vypocitam znovu minCorner pro dany podblok 
-                Vec3_t<float> childMinCorner = {
-                    minCorner.x + x * childEdgeLength,
-                    minCorner.y + y * childEdgeLength,
-                    minCorner.z + z * childEdgeLength,
-                };
-
-                // rekurzivne zpracuji kazdy podblok
-                totalTriangles += processNode(childMinCorner, childEdgeLength, field);
-            }
-        }
-    }
-
-    return totalTriangles;
+    return isBlockEmpty;
 }
 
 unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)

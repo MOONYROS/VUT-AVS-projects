@@ -19,7 +19,8 @@ public:
     TreeMeshBuilder(unsigned gridEdgeSize);
 
 protected:
-    unsigned processNode(const Vec3_t<float> &minCorner, float edgelength, const ParametricScalarField &field);
+    unsigned processNode(const Vec3_t<float> &minCorner, float edgeLength, const ParametricScalarField &field);
+    bool isBlockEmpty(const Vec3_t<float> &position, float gridSize, const ParametricScalarField &field);
     unsigned marchCubes(const ParametricScalarField &field);
     float evaluateFieldAt(const Vec3_t<float> &pos, const ParametricScalarField &field);
     void emitTriangle(const Triangle_t &triangle);
