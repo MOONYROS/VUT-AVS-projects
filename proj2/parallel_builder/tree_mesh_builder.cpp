@@ -67,7 +67,7 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGri
                                 unsigned childTriangles = processNode(childPos, childGridSize, field);
 
                                 // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
-                                #pragma omp atomic
+                                #pragma omp atomic update
                                 totalTriangles += childTriangles;
                             }
                         }
