@@ -50,27 +50,22 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGri
         {
             #pragma omp single nowait
             {
-                for (int x = 0; x < 2; ++x)
+                for (unsigned i = 0; i < 8; ++i)
                 {
-                    for (int y = 0; y < 2; ++y)
+                    // vypocitame minimalni rozek pro kazdeho potomka...
+                    Vec3_t<float> childPos = {
+                        pos.x + childGridSize * sc_vertexNormPos[i].x,
+                        pos.y + childGridSize * sc_vertexNormPos[i].y,
+                        pos.z + childGridSize * sc_vertexNormPos[i].z
+                    };
+
+                    #pragma omp task shared(totalTriangles)
                     {
-                        for (int z = 0; z < 2; ++z)
-                        {
-                            // vypocitame minimalni rozek pro kazdeho potomka...
-                            Vec3_t<float> childPos = {
-                                pos.x + x * childGridSize,
-                                pos.y + y * childGridSize,
-                                pos.z + z * childGridSize};
+                        unsigned childTriangles = processNode(childPos, childGridSize, field);
 
-                            #pragma omp task shared(totalTriangles)
-                            {
-                                unsigned childTriangles = processNode(childPos, childGridSize, field);
-
-                                // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
-                                #pragma omp atomic update
-                                totalTriangles += childTriangles;
-                            }
-                        }
+                        // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
+                        #pragma omp atomic update
+                        totalTriangles += childTriangles;
                     }
                 }
             }
