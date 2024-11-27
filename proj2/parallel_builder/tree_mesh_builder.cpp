@@ -36,11 +36,11 @@ bool TreeMeshBuilder::isBlockEmpty(const Vec3_t<float> &position, float gridSize
     float edgeLength = gridSize * mGridResolution;
 
     // vypocet souradnice stredu bloku
-    const Vec3_t<float> blockCenter = (
+    const Vec3_t<float> blockCenter = {
         (position.x + gridSize / 2.0f) * mGridResolution,
         (position.y + gridSize / 2.0f) * mGridResolution,
         (position.z + gridSize / 2.0f) * mGridResolution
-    );
+    };
 
     // hodnota ve stredu bloku
     const float blockCenterValue = evaluateFieldAt(blockCenter, field);
