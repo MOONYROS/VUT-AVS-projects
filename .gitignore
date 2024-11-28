@@ -3,6 +3,7 @@ build
 build_advisor
 build_vtune
 build_evaluate
+build_bench
 bench.sl
 .vscode
 *.out
