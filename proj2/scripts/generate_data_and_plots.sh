@@ -4,14 +4,14 @@ SCRIPT_ROOT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 if [[ ! -f "grid_scaling_out.csv" ]]; then
     echo "Measuring grid size scaling"
-    $SCRIPT_ROOT_PATH/measure_grid_scaling.sh
+    bash $SCRIPT_ROOT_PATH/measure_grid_scaling.sh
 else
     echo "Grid size scaling results exist. Skipping."
 fi
 
 if [[ ! -f "input_scaling_out.csv" ]]; then
     echo "Measuring input size scaling"
-    $SCRIPT_ROOT_PATH/measure_input_scaling.sh
+    bash $SCRIPT_ROOT_PATH/measure_input_scaling.sh
 else
     echo "Input size scaling results exist. Skipping."
 fi
