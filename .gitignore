@@ -3,6 +3,7 @@ build
 build_advisor
 build_vtune
 build_evaluate
+bench.sl
 .vscode
 *.out
 *.csv
