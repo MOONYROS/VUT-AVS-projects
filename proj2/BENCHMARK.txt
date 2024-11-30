@@ -25,5 +25,5 @@ threads: 36, avg: 318 ms
 ==== TREE ====
 iterations: 20
 builder: tree
-threads: 18, avg: 548 ms
-threads: 36, avg: 611 ms
+threads: 18, avg: 198 ms
+threads: 36, avg: 162 ms
