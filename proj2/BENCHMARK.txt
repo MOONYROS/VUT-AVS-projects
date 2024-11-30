@@ -1,26 +1,26 @@
 ==== LOOP DYNAMIC 8 ====
 iterations: 20
 builder: loop
-threads: 18, avg: 495 ms
+threads: 18, avg: 494 ms
 threads: 36, avg: 312 ms
 
 ==== LOOP DYNAMIC 16 ====
 iterations: 20
 builder: loop
-threads: 18, avg: 496 ms
-threads: 36, avg: 325 ms
+threads: 18, avg: 492 ms
+threads: 36, avg: 323 ms
 
 ==== LOOP GUIDED 8 ====
 iterations: 20
 builder: loop
-threads: 18, avg: 496 ms
+threads: 18, avg: 492 ms
 threads: 36, avg: 312 ms
 
 ==== LOOP GUIDED 16 ====
 iterations: 20
 builder: loop
-threads: 18, avg: 494 ms
-threads: 36, avg: 320 ms
+threads: 18, avg: 491 ms
+threads: 36, avg: 318 ms
 
 ==== TREE ====
 iterations: 20

@@ -29,7 +29,7 @@ unsigned LoopMeshBuilder::marchCubes(const ParametricScalarField &field)
     // rozdeleni foru na vice vlaken
     // redukce je kvuli pripocitavani k totalTriangles v kazde iteraci
     // predchazi se tak race conditions
-    #pragma omp parallel for reduction(+: totalTriangles) schedule(dynamic, 8)
+    #pragma omp parallel for reduction(+: totalTriangles) schedule(guided, 8)
     for (size_t i = 0; i < totalCubesCount; ++i) {
         Vec3_t<float> cubeOffset( i % mGridSize,
                                  (i / mGridSize) % mGridSize,
