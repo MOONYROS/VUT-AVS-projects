@@ -22,8 +22,26 @@ builder: loop
 threads: 18, avg: 491 ms
 threads: 36, avg: 318 ms
 
-==== TREE ====
+==== TREE CUTOFF = 1 ====
 iterations: 20
 builder: tree
 threads: 18, avg: 198 ms
 threads: 36, avg: 162 ms
+
+==== TREE CUTOFF = 2 ====
+iterations: 20
+builder: tree
+threads: 18, avg: 27 ms
+threads: 36, avg: 23 ms
+
+==== TREE CUTOFF = 4 ====
+iterations: 20
+builder: tree
+threads: 18, avg: 4 ms
+threads: 36, avg: 4 ms
+
+==== TREE CUTOFF = 8 ====
+iterations: 20
+builder: tree
+threads: 18, avg: 1 ms
+threads: 36, avg: 2 ms
