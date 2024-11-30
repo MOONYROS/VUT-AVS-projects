@@ -31,12 +31,37 @@ Login: xlukas15
 ===============================================================================
 1) Stručně popište použití OpenMP tasků ve vašem řešení. 
 
+   OpenMP tasky používám v metodě processNode, kdy je ve smyčce for každý uzel rozdělen na 8 dalších potomků.
+   Pro každého z těchto potomků pak spouštím vlastní task, který opět rekurzivně vytváří další potomky.
+   Následně tasky synchronizuji pomocí pragmy taskwait.
+   To způsobí, že všechny poduzly budou dokončeny předtím, než je vrácen výsledek.
+   V každém z tasku je nastavena množina sdílených zdrojů (pos, childGridSize...) a soukromých zdrojů (i).
+   Aktualizace počtu trojúhelníků je pak docílena pomocí pragmy atomic pro update, kterou se předchází race condition.
+
 2) Jakou hodnotu cut-off jste zvolili? Jaké hodnoty "cut-off" jste zkoušeli, 
    na jak velkých velikostech problému a jakých času jste dosáhli? 
    Odůvodněte vaši volbu.
 
+   Jako cut-off jsem zvolil hodnotu 1.
+   Zkoušel jsem ale i jiné mocniny základu 2, tedy například 2, 4, 8.
+   Testoval jsem to na grid velikostech 64 a 128, tedy stejně, jako je to ve scriptu compare.sh.
+   Zároveň jsou zkoušel program spouštět na 18 a 36 vláken.
+   S velikostí cut-offu se časy výrazně snižovaly.
+   Níže uvádím, jaké časy mi průměrně vycházely pro různé velikosti cut-offu pro 18 a 36 vláken na souboru bun_zipper_res3.pts s --grid 128.
+
+      - cut-off = 1 => threads 18:   198 ms   threads 36: 162 ms
+      - cut-off = 2 => threads 18:    27 ms   threads 36:  23 ms
+      - cut-off = 4 => threads 18:     4 ms   threads 36:   4 ms
+      - cut-off = 8 => threads 18:     1 ms   threads 36:   2 ms
+
+   Cut-off 1 jsem zvolil z důvodu přesnosti. Při vysokém cut-offu model neobsahuje tolik trojúhelníků, díky čemuž také neprochází porovnávacím skriptem. 
+
 3) Jakým způsobem zajišťujete ukládání trojúhelníků z několika vláken současně 
    v metodě LoopMeshBuilder::emitTriangle?
+
+   Ve variantě loop i tree ukládám trojúhelníky za pomoci kritické sekce.
+   To způsobuje, že dovnitř může přistoupit pouze jedno vlákno v jeden okamžik, díky čemuž nemůže vzniknout race condition.
+   Využívám tedy pragmu #pragma omp critical, která mi umožňuje bezpečně přistupovat k pomocnému vektoru mTriangles.
 
 Úloha 3: Grafy škálování všech řešení
 ===============================================================================
