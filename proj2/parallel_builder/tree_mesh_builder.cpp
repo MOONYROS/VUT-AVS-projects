@@ -150,15 +150,6 @@ float TreeMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const Parametri
 
 void TreeMeshBuilder::emitTriangle(const BaseMeshBuilder::Triangle_t &triangle)
 {
-    // STEJNE JAKO LOOP
-    static thread_local std::vector<Triangle_t> localTriangles;
-
-    localTriangles.push_back(triangle);
-
     #pragma omp critical
-    {
-        mTriangles.insert(mTriangles.end(), localTriangles.begin(), localTriangles.end());
-    }
-
-    localTriangles.clear();
+    mTriangles.push_back(triangle);
 }
