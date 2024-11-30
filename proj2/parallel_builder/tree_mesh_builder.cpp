@@ -20,7 +20,6 @@ TreeMeshBuilder::TreeMeshBuilder(unsigned gridEdgeSize)
 
 }
 
-// TODO OpenMP tasky
 /**
  * @brief Recursively processes a node in scalar field and generates triangles.
  * 
@@ -46,32 +45,27 @@ unsigned TreeMeshBuilder::processNode(const Vec3_t<float> &pos, float currentGri
         unsigned totalTriangles = 0;
         float childGridSize = currentGridSize / 2.0f;
 
-        #pragma omp parallel
+        for (unsigned i = 0; i < 8; ++i)
         {
-            #pragma omp single nowait
+            #pragma omp task default(none) firstprivate(i) shared(pos, childGridSize, totalTriangles, field)
             {
-                for (unsigned i = 0; i < 8; ++i)
-                {
-                    // vypocitame minimalni rozek pro kazdeho potomka...
-                    Vec3_t<float> childPos = {
-                        pos.x + childGridSize * sc_vertexNormPos[i].x,
-                        pos.y + childGridSize * sc_vertexNormPos[i].y,
-                        pos.z + childGridSize * sc_vertexNormPos[i].z
-                    };
+                // vypocitame minimalni rozek pro kazdeho potomka...
+                Vec3_t<float> childPos = {
+                    pos.x + childGridSize * sc_vertexNormPos[i].x,
+                    pos.y + childGridSize * sc_vertexNormPos[i].y,
+                    pos.z + childGridSize * sc_vertexNormPos[i].z
+                };
 
-                    #pragma omp task shared(totalTriangles) firstprivate(childPos, childGridSize) final(childGridSize <= CUT_OFF * 2)
-                    {
-                        unsigned childTriangles = processNode(childPos, childGridSize, field);
+                unsigned childTriangles = processNode(childPos, childGridSize, field);
 
-                        // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
-                        #pragma omp atomic update
-                        totalTriangles += childTriangles;
-                    }
-                }
+                // ...a pro kazdeho z nich metodu zavolame rekurzivne znovu
+                #pragma omp atomic update
+                totalTriangles += childTriangles;
             }
         }
 
         // vracime konecny pocet vsech trojuhelniku
+        #pragma omp taskwait
         return totalTriangles;
     }
 }
@@ -116,12 +110,11 @@ unsigned TreeMeshBuilder::marchCubes(const ParametricScalarField &field)
     Vec3_t<float> rootStartCorner = {0.0f,
                                      0.0f,
                                      0.0f};
-    
-    // velikost hrany je cele hrany gridu
-    float rootEdgeLength = mGridSize;
 
     // spustim rekurzivni funkci, co jsem si vytvoril drive
-    totalTriangles = processNode(rootStartCorner, rootEdgeLength, field);
+    #pragma omp parallel default(none) shared(totalTriangles, rootStartCorner, field)
+    #pragma omp single nowait
+    totalTriangles = processNode(rootStartCorner, mGridSize, field);
     
     // vracim ten rekurzivne spocitany pocet trojuhelniku
     return totalTriangles;
