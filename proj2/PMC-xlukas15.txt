@@ -1,17 +1,31 @@
 Architektury Výpočetních Systémů (AVS 2024)
 Projekt č. 2 (PMC)
-Login: xlogin00
+Login: xlukas15
 
 Úloha 1: Paralelizace původního řešení
 ===============================================================================
 1) Kterou ze smyček (viz zadání) je vhodnější paralelizovat a co způsobuje 
    neefektivitu paralelizaci té druhé?
    
+   Pro paralelizaci jsem si vybral smyčku v metodě marchCubes (tedy tu první).
+   První smyčka se totiž nachází v nejvyšší úrovni.
+   Volá se v ní metoda buildCube, která teprve pak volá evaluateFieldAt (je volaná 8krát pro každé spuštění buildCube).
+   Bylo by tedy neefektivní ji mít ve druhé smyčce, protože by se zbytečně často zakládala a rušila nová vlákna.
+
 2) Jak jste ve funkci LoopMeshBuilder::marchCubes zajistili správný výsledek 
   (počet trojúhelníků) vrácený touto funkcí? Popište jaké řešení jste zvolili a proč.  
   
+   Zajistil jsem to pomocí OpenMP redukce na proměnné totalTriangles (reduction(+: totalTriangles)).
+   Díky tomu vždy dostanu správný součet na konci smyčky, protože redukce umožňuje souběžně přistupovat k datům (v mém případě k totalTriangles).
+
 3) Jaké plánování (rozdělení práce mezi vlákna) jste zvolili a proč? Popište, na
    jakých datech (počet vláken, velikost problému) jste k závěrům došli.  
+
+   Zvolil jsem si plánování schedule(guided, 8).
+   Různé typy plánování jsem zkoušel na souboru bun_zipper_res3.pts s --grid 128 a úlohu jsem spouštěl pro 18 a 36 vláken.
+   Pro různá plánování a velikosti jsem spustil 20 iterací, z nichž právě guided, 8 mi vyšla nejlépe.
+   Nicméně velmi podobně vyšla i třeba dynamic, 8.
+   Výsledné plánování jsem vybral na základě dosažených časů (avg 18 vláken: 492 ms, avg 36 vláken: 312 ms).
 
 Úloha 2: Paralelní průchod stromem
 ===============================================================================
@@ -23,7 +37,6 @@ Login: xlogin00
 
 3) Jakým způsobem zajišťujete ukládání trojúhelníků z několika vláken současně 
    v metodě LoopMeshBuilder::emitTriangle?
-
 
 Úloha 3: Grafy škálování všech řešení
 ===============================================================================
