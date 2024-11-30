@@ -69,12 +69,33 @@ Login: xlukas15
 1) Stručně zhodnoťte efektivitu vytvořených řešení 
    (na základě VŠECH odevzdaných grafů ŠKÁLOVÁNÍ).
 
+   Z grafů škálování je zřejmé, že celkově efektivnější je spíše implementace s octree, a to primárně pro větší mřížky.
+   
+   U silného škálování si lze všimnout, že efektivita octree při velkém počtu vláken má trend spíše klesat (při melém množství vstpů na vlánko).
+   Tento problém nejspíše způsobuje velká režie pro správu a synchronizaci paralelizace.
+
+   Při slabém škálování je zajímavé si všímat loop implementace.
+   Jeho výkon je totiž víceméně konstantní i s roustoucí velikostí vstupu na vlákno.
+   Při velkých vstupech je vidět trend, při kterém má loop velmi podobnou efektivitu, jako octree.
+
+   Na grafu, týkajícím se velikostí mřížky opět jasně vyniká octree, který se loopu s roustoucí velikostí vstupu neustále více vzdaluje.
+
 2) V jakém případě (v závislosti na počtu bodů ve vstupním souboru a velikosti 
    mřížky) bude vaše řešení 1. úlohy neefektivní? 
    (pokud takový případ existuje a je vidět ve vašem grafu)
 
+   Octree bude neefektivní v případech, ve kterých je velikost mřížky velká, ale počet bodů ve vstupním souboru bude malý.
+   Lze si toho všimnout na grafech silného škálování, kde při vysokém počtu vláken a malém množství vstupů na vlákno dochází ke snižování efektivity.
+   To je způsobeno velkou režií při vytváření a synchronizaci vláken.
+
 3) Je (nebo není) stromový algoritmus efektivnější z pohledu slabého škálování 
    vzhledem ke vstupu?
+
+   === TOHLE SE JESTE ZAMYSLET, JE TO SLOZITE ===
+
+   Octree efektivnější spíše není.
+   Při rostoucím počtu vláken totiž čas výpočtu roste, což je zřejmě způsobeno vysokou režíí, správou a synchronizací vláken.
+   Loop ale bez ohledu na množství vláken zůstává znatelně konzistentnější i se zvyšujícím se počtem vláken.
 
 4) Do souboru 3_4.txt napište svůj login, který používáte na Barboře, na druhý
    řádek napište počet úloh (jobs), které jste spustili za dobu řešení projektu 2
@@ -82,6 +103,9 @@ Login: xlukas15
    V souboru 3_4.txt využijte předpřipravené kostry - údaje přepište. Můžete využít
    údajů ze Slurm plánovače, nepočítejte úlohy se suffixem (přepínač -X).
 
+   xlukas15
+   50
+   08:44:17
 
 Úloha 4: Analýza využití jader pomocí VTune
 ================================================================================
