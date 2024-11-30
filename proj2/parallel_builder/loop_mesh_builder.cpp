@@ -52,7 +52,6 @@ float LoopMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const Parametri
     // vezmu si maximalni vzdalenost pole, kterou budu postupne zmensovat
     float minDistanceSquared = std::numeric_limits<float>::max();
 
-    #pragma omp simd reduction(min:minDistanceSquared)
     for (unsigned i = 0; i < count; ++i) {
         float distanceSquared  = (pos.x - pPoints[i].x) * (pos.x - pPoints[i].x);
         distanceSquared       += (pos.y - pPoints[i].y) * (pos.y - pPoints[i].y);
