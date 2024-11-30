@@ -29,7 +29,7 @@ unsigned LoopMeshBuilder::marchCubes(const ParametricScalarField &field)
     // rozdeleni foru na vice vlaken
     // redukce je kvuli pripocitavani k totalTriangles v kazde iteraci
     // predchazi se tak race conditions
-    #pragma omp parallel for reduction(+: totalTriangles)
+    #pragma omp parallel for reduction(+: totalTriangles) schedule(dynamic, 8)
     for (size_t i = 0; i < totalCubesCount; ++i) {
         Vec3_t<float> cubeOffset( i % mGridSize,
                                  (i / mGridSize) % mGridSize,
@@ -52,7 +52,7 @@ float LoopMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const Parametri
     // vezmu si maximalni vzdalenost pole, kterou budu postupne zmensovat
     float minDistanceSquared = std::numeric_limits<float>::max();
 
-    #pragma omp parallel for reduction(min:minDistanceSquared)
+    #pragma omp simd reduction(min:minDistanceSquared)
     for (unsigned i = 0; i < count; ++i) {
         float distanceSquared  = (pos.x - pPoints[i].x) * (pos.x - pPoints[i].x);
         distanceSquared       += (pos.y - pPoints[i].y) * (pos.y - pPoints[i].y);
@@ -66,18 +66,6 @@ float LoopMeshBuilder::evaluateFieldAt(const Vec3_t<float> &pos, const Parametri
 
 void LoopMeshBuilder::emitTriangle(const BaseMeshBuilder::Triangle_t &triangle)
 {
-    // buffer pro trojuhelniky - pro kazde vlakno vlastni
-    // pokud vlakno spousti metodu vicekrat, uklada si data do stejneho vektoru
-    static thread_local std::vector<Triangle_t> localTriangles;
-
-    // pridam trojuhelnik do bufferu
-    localTriangles.push_back(triangle);
-
     #pragma omp critical
-    {
-        // pridava na konec mTriangles buffer localTriangles
-        mTriangles.insert(mTriangles.end(), localTriangles.begin(), localTriangles.end());
-    }
-
-    localTriangles.clear(); // vycisteni bufferu
+    mTriangles.push_back(triangle);
 }
