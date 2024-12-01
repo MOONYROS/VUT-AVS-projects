@@ -58,15 +58,14 @@ Field Elements:      1889
 
 ----- ref -----
 Elapsed Time:        9398 ms
-Mesh Triangle Count: 163220
 
 ----- loop -----
-Elapsed Time:        497 ms
-Mesh Triangle Count: 163220
+Elapsed Time:        506 ms
+Speedup:             1857.31 %
 
 ----- tree -----
-Elapsed Time:        205 ms
-Mesh Triangle Count: 163220
+Elapsed Time:        199 ms
+Speedup:             4722.61 %
 
 ===== -t 36 =====
 Input Field File:    ../data/bun_zipper_res3.pts
@@ -77,12 +76,11 @@ Field Elements:      1889
 
 ----- ref -----
 Elapsed Time:        9398 ms
-Mesh Triangle Count: 163220
 
 ----- loop -----
-Elapsed Time:        1138 ms
-Mesh Triangle Count: 163220
+Elapsed Time:        1063 ms
+Speedup:             884.10 %
 
 ----- tree -----
-Elapsed Time:        550 ms
-Mesh Triangle Count: 163220
+Elapsed Time:        432 ms
+Speedup:             2175.46 %
