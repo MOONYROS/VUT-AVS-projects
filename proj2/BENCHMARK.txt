@@ -45,3 +45,44 @@ iterations: 20
 builder: tree
 threads: 18, avg: 1 ms
 threads: 36, avg: 2 ms
+
+-------> DATA PRO UKOL 4.1:
+COMMAND: ./PMC --builder {ref, tree, loop} -t {18, 36} --grid 128 ../data/bun_zipper_res3.pts
+
+===== -t 18 =====
+Input Field File:    ../data/bun_zipper_res3.pts
+Output Mesh File:    
+Grid Size:           128
+Iso Level:           0.15
+Field Elements:      1889
+
+----- ref -----
+Elapsed Time:        9398 ms
+Mesh Triangle Count: 163220
+
+----- loop -----
+Elapsed Time:        497 ms
+Mesh Triangle Count: 163220
+
+----- tree -----
+Elapsed Time:        205 ms
+Mesh Triangle Count: 163220
+
+===== -t 36 =====
+Input Field File:    ../data/bun_zipper_res3.pts
+Output Mesh File:    
+Grid Size:           128
+Iso Level:           0.15
+Field Elements:      1889
+
+----- ref -----
+Elapsed Time:        9398 ms
+Mesh Triangle Count: 163220
+
+----- loop -----
+Elapsed Time:        1138 ms
+Mesh Triangle Count: 163220
+
+----- tree -----
+Elapsed Time:        550 ms
+Mesh Triangle Count: 163220
