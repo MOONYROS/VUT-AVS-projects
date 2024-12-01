@@ -114,17 +114,17 @@ Login: xlukas15
    18 vláken? Hodnoty zapište do souboru 4_1.txt
    (využijte předpřipravené kostry v souboru - čísla přepište).
    
-   ref:
-   loop:
-   tree:
+   ref:     2.8
+   loop:   45.9
+   tree:   35.9
 
 2) Jaké bylo průměrné využití jader pro všechny tři implementace s využitím 
    všech jader? Hodnoty zapište do souboru 4_2.txt (využijte předpřipravené 
    kostry v souboru - čísla přepište).
    
-   ref:
-   loop:
-   tree:   
+   ref:     2.8
+   loop:   85.9
+   tree:   54.6
 
 3) Vypočítejte efektivitu vašeho řešení loop a tree vůči ref pro 18 a 36 vláken. 
    Hodnoty naměřte ručně na výpočetním uzlu, ne přes VTune. Použijte následující parametry:
