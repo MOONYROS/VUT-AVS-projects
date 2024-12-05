@@ -5,6 +5,7 @@ build_vtune
 build_evaluate
 build_bench
 bench.sl
+perf.sl
 .vscode
 *.out
 *.csv
