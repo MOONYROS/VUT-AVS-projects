@@ -133,10 +133,10 @@ Login: xlukas15
    
    Hodnoty zapište do souboru 4_3.txt 
    (využijte předpřipravené kostry v souboru - čísla přepište):
-   "loop (18)" vs. "ref"   1857.31 %
-   "tree (18)" vs. "ref"   4722.61 %
-   "loop (36)" vs. "ref"    884.10 %
-   "tree (36)" vs. "ref"   2175.46 %
+   "loop (18)" vs. "ref"   116.082 %
+   "tree (18)" vs. "ref"   295.163 %
+   "loop (36)" vs. "ref"    24.558 %
+   "tree (36)" vs. "ref"    60.430 %
 
    Poznámka:   Testovaný binární soubor byl vytvořen slurm skriptem vtune.sl.
                Spouštění PMC bylo provedeno s použitím kompilátoru intel-compilers/2024.2.0, tedy stejným, jako používá vtune.sl.
