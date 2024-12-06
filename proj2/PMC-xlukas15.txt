@@ -133,10 +133,14 @@ Login: xlukas15
    
    Hodnoty zapište do souboru 4_3.txt 
    (využijte předpřipravené kostry v souboru - čísla přepište):
-   "loop (18)" vs. "ref"   116.082 %
-   "tree (18)" vs. "ref"   295.163 %
-   "loop (36)" vs. "ref"    24.558 %
+   "loop (18)" vs. "ref"   106.553 %
+   "tree (18)" vs. "ref"   262.367 %
+   "loop (36)" vs. "ref"    80.325 %
    "tree (36)" vs. "ref"    60.430 %
 
    Poznámka:   Testovaný binární soubor byl vytvořen slurm skriptem vtune.sl.
                Spouštění PMC bylo provedeno s použitím kompilátoru intel-compilers/2024.2.0, tedy stejným, jako používá vtune.sl.
+
+   Poznámka:   Efektivitu jsem počítal stejně, jako na cvičení 5.
+               Tedy např. pro loop (18) jsem počítal jako ref(18)/loop(18) = SPEEDUP.
+               Potom SPEEDUP/18*100 = EFEKTIVITA

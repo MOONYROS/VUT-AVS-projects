@@ -60,7 +60,7 @@ Field Elements:      1889
 Elapsed Time:        9398 ms
 
 ----- loop -----
-Elapsed Time:        506 ms
+Elapsed Time:        490 ms
 Speedup:             1857.31 %
 
 ----- tree -----
@@ -78,7 +78,7 @@ Field Elements:      1889
 Elapsed Time:        9398 ms
 
 ----- loop -----
-Elapsed Time:        1063 ms
+Elapsed Time:        325 ms
 Speedup:             884.10 %
 
 ----- tree -----
