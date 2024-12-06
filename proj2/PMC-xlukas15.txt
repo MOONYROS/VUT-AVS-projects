@@ -84,17 +84,15 @@ Login: xlukas15
    mřížky) bude vaše řešení 1. úlohy neefektivní? 
    (pokud takový případ existuje a je vidět ve vašem grafu)
 
-   Octree bude neefektivní v případech, ve kterých je velikost mřížky velká, ale počet bodů ve vstupním souboru bude malý.
+   Octree bude neefektivní v případech, ve kterých je velikost mřížky velká, ale počet bodů ve vstupním souboru malý.
    Lze si toho všimnout na grafech silného škálování, kde při vysokém počtu vláken a malém množství vstupů na vlákno dochází ke snižování efektivity.
-   To je způsobeno velkou režií při vytváření a synchronizaci vláken.
+   To je zřejmě způsobeno velkou režií při vytváření a synchronizaci vláken.
 
 3) Je (nebo není) stromový algoritmus efektivnější z pohledu slabého škálování 
    vzhledem ke vstupu?
 
-   === TOHLE SE JESTE ZAMYSLET, JE TO SLOZITE ===
-
    Octree efektivnější spíše není.
-   Při rostoucím počtu vláken totiž čas výpočtu roste, což je zřejmě způsobeno vysokou režíí, správou a synchronizací vláken.
+   Při rostoucím počtu vláken totiž čas výpočtu roste, což je zřejmě způsobeno vysokou režíí, správou a synchronizací tasků.
    Loop ale bez ohledu na množství vláken zůstává znatelně konzistentnější i se zvyšujícím se počtem vláken.
 
 4) Do souboru 3_4.txt napište svůj login, který používáte na Barboře, na druhý
