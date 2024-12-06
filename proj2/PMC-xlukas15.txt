@@ -47,7 +47,7 @@ Login: xlukas15
    Testoval jsem to na grid velikostech 64 a 128, tedy stejně, jako je to ve scriptu compare.sh.
    Zároveň jsou zkoušel program spouštět na 18 a 36 vláken.
    S velikostí cut-offu se časy výrazně snižovaly.
-   Nicméně spolu s tím se snižovala i kvalita 3D modelu, který byl se zvyšujícím se cut-offem stále hrubší, jelikož se skládal z méně trojúhelníků.
+   Nicméně jelikož model se zvětšujícím se cut-offem neměl tolik polygonů, byl model více roztroušený a nevypadal celistvě.
    Níže uvádím, jaké časy mi průměrně vycházely pro různé velikosti cut-offu pro 18 a 36 vláken na souboru bun_zipper_res3.pts s --grid 128.
 
       - cut-off = 1 => threads 18:   198 ms   threads 36: 162 ms
