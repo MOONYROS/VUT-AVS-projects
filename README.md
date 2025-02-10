@@ -1,4 +1,4 @@
-# VUT Data Storage and Preparation (2024/2025)
+# VUT Computation Systems Architectures (2024/2025)
 
 ## Project evaluations
 
